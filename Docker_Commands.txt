@@ -1,0 +1,31 @@
+sudo yum update -y
+sudo yum install -y docker
+systemctl enable docker
+systemctl start docker
+sudo usermod -a -G docker ec2-user
+
+sudo docker pull httpd             ==>## download image from docker engine
+docker images
+docker run -itd -p "80:80" httpd   ==>## convert image into container
+docker ps      			   =>## running container only visiable
+docker ps -a   			   =>## all containers visiable
+docker exec -it 1575 /bin/bash     ==>## mention container id after -it
+
+apt-get update
+apt install vim
+exit
+docker stop 1575
+docker start 1575
+docker rm 1575
+docker rm -f 1575
+docker rmi httpd
+docker logs id | name
+docker inspect id | name
+docker stats (id | name => optional)
+docker top id | name
+docker commit 15 kaashiv:v1.0
+docker save -o /kaashiv_v1.tar kaashiv:v1.0
+
+docker login
+docker tag kaashiv:v1.0 username/kaashiv_v1:v1.0
+docker push username/kaashiv_v1

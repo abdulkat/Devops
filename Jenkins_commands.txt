@@ -1,0 +1,125 @@
+Jenkins official document: https://www.jenkins.io/doc/tutorials/tutorial-for-installing-jenkins-on-AWS/
+
+Jenkins Installation
+----------------------
+
+sudo yum update –y
+
+sudo wget -O /etc/yum.repos.d/jenkins.repo \
+    https://pkg.jenkins.io/redhat-stable/jenkins.repo
+
+rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+yum upgrade
+
+yum install java-21-amazon-corretto -y
+
+yum install jenkins -y
+
+systemctl enable jenkins
+
+systemctl start jenkins
+
+systemctl status jenkins
+
+cat /var/lib/jenkins/secrets/initialAdminPassword   --->##Displays intial jenkins password
+
+----------------------------------------------------------
+## install suggested pulgins
+## create first admin unser name & password
+## After installation the built-in node is offline due to low disk space.
+## go to nodes and click configure monitors then check free disk & temp space & save.
+## click settings and Bring back to online node.
+## create node as name Slave and save the home directory path as "/home/ec2-user/jenkins"
+## To connect Master & slave machine we need agent.jar file in slave machine
+-----------------------------------------------------------
+
+Setup Slave server
+---------------------------
+## download jar file from public ip of Master machine & copy the file to slave machine
+## Then save the keys as pem format
+## Then install java and others on slave machine
+
+http://13.233.163.81:8080/jnlpJars/agent.jar
+wget http://172.31.10.141:8080/jnlpJars/agent.jar    --->## this command in slave machine but master private ip address
+
+
+Free swap space in node
+----------------------------
+sudo swapon --show        		## Check Existing Swap Space
+sudo fallocate -l 2G /swapfile   	## Create a Swap File (what you want)
+sudo chmod 600 /swapfile  		## Secure the Swap File
+sudo mkswap /swapfile   		## Set Up the Swap Space
+sudo swapon /swapfile   		## Enable the Swap File 
+sudo swapon --show free -h  		## Verify Swap Space: 
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab  ## Make the Swap Space Permanent: 
+
+
+Maven Installation
+------------------
+
+wget https://dlcdn.apache.org/maven/maven-3/3.9.11/binaries/apache-maven-3.9.11-bin.tar.gz
+     
+tar xzvf apache-maven-3.9.11-bin.tar.gz -C /opt
+
+export PATH=${PATH:+$PATH:}/opt/apache-maven-3.9.11/bin
+       
+
+----------------------------------------------------------------------------------------------------
+If you are ec2-user, then swith to root user as sudo su - then change directory  cd /home/ec2-user
+---------------------------------------------------------------------------------------------------
+
+
+Tomcat Installation
+-------------------
+
+wget https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.43/bin/apache-tomcat-10.1.43.tar.gz
+     
+tar xzvf apache-tomcat-10.1.43.tar.gz -C /opt
+
+export PATH=${PATH:+$PATH:}/opt/apache-tomcat-10.1.43/bin
+
+
+catalina.sh start (OR) catalina.sh stop
+	(OR)
+startup.sh (OR) shutdown.sh
+
+	
+nano opt/apache-tomcat-10.1.43/webapps/manager/META-INF/context.xml [change *]      ## to access manager button
+allow=".*"
+
+nano /opt/apache-tomcat-10.1.43/conf/tomcat-users.xml  [open file and add this line] 
+
+<user username="admin" password="admin123" roles="admin-gui,manager-gui,manager-script"/>   ## to add users with roles
+
+nano server.xml [PORT Change 8080 to 8000]
+
+
+Apache Installation
+--------------------
+
+yum install httpd
+
+nano /etc/httpd/conf.d/proxypass.conf
+
+ProxyPass / http://localhost:8080/todo/
+ProxyPassReverse / http://localhost:8080/todo/
+
+systemctl restart httpd
+
+
+Git Installation
+----------------
+
+yum install git -y
+
+which git   
+/usr/bin/git                    --->## we need to inform the git installation path to jenkins
+
+##we have to inform the path in Tools page
+
+Delete swap & Temp space
+----------------------------------
+sudo swapoff - a
+sudo swapon - a
+sudo rm - rf /tmp/*

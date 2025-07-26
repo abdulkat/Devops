@@ -34,16 +34,6 @@ cat /var/lib/jenkins/secrets/initialAdminPassword   --->##Displays intial jenkin
 ## To connect Master & slave machine we need agent.jar file in slave machine
 -----------------------------------------------------------
 
-Setup Slave server
----------------------------
-## download jar file from public ip of Master machine & copy the file to slave machine
-## Then save the keys as pem format
-## Then install java and others on slave machine
-
-http://13.233.163.81:8080/jnlpJars/agent.jar
-wget http://172.31.10.141:8080/jnlpJars/agent.jar    --->## this command in slave machine but master private ip address
-
-
 Free swap space in node
 ----------------------------
 sudo swapon --show        		## Check Existing Swap Space
@@ -53,6 +43,15 @@ sudo mkswap /swapfile   		## Set Up the Swap Space
 sudo swapon /swapfile   		## Enable the Swap File 
 sudo swapon --show free -h  		## Verify Swap Space: 
 echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab  ## Make the Swap Space Permanent: 
+
+Setup Slave server
+---------------------------
+## download jar file from public ip of Master machine & copy the file to slave machine
+## Then save the keys as pem format
+## Then install java and others on slave machine
+
+http://13.233.163.81:8080/jnlpJars/agent.jar
+wget http://172.31.10.141:8080/jnlpJars/agent.jar    --->## this command in slave machine but master private ip address
 
 
 Maven Installation
